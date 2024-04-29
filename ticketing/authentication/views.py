@@ -21,4 +21,3 @@ def login_view(request):
 
     return render(request, 'authentication/auth.html', {'form': form})
 
-
