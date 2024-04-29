@@ -15,12 +15,10 @@ def login_view(request):
             if user is not None:
                 login(request, user)
                 print('ok buddy')
-                return redirect('essence:default')
+                return redirect('main:default')
     else:
         form = LoginForm()
 
     return render(request, 'authentication/auth.html', {'form': form})
 
 
-
-# Create your views here.
