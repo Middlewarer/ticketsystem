@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+<head>
+    <title>Список тикетов</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
+</head>
+<body>
+    <h1>List</h1>
+    <ul>
+        {% for ticket in tickets %}
+            <li>
+                <h3>{{ ticket.title }}</h3>
+                <p><strong>Description:</strong> {{ ticket.description }}</p>
+                <p><strong>Category:</strong> {{ ticket.category }}</p>
+                <p><strong>Priority:</strong> {{ ticket.get_priority_display }}</p>
+                <p><strong>Status:</strong> {{ ticket.get_status_display }}</p>
+                <p><strong>Your Agent:</strong> {{ ticket.assigned_to }}</p>
+                <p><strong>Date of creation:</strong> {{ ticket.created_at }}</p>
+                <a href="">More details __ <</a>
+                <hr>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

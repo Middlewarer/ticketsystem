@@ -1,6 +1,7 @@
 from django.shortcuts import render
 
 from .forms import TicketForm
+from .models import Ticket
 
 
 def default(request):
@@ -15,5 +16,10 @@ def create_ticket(request):
     else:
         form = TicketForm()
     return render(request, 'essence/cr_ticket.html', {"form": form})
+
+
+def ticket_list_view(request):
+    tickets = Ticket.objects.all()
+    return render(request, 'essence/ticket_list.html', {"tickets": tickets})
 
 # Create your views here.
