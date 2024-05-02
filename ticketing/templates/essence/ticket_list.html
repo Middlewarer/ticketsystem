@@ -2,25 +2,52 @@
 {% load static %}
 <html>
 <head>
-    <title>Список тикетов</title>
+    <title>Ticket list</title>
     <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css">
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
 </head>
 <body>
-    <h1>List</h1>
-    <ul>
-        {% for ticket in tickets %}
-            <li>
-                <h3>{{ ticket.title }}</h3>
-                <p><strong>Description:</strong> {{ ticket.description }}</p>
-                <p><strong>Category:</strong> {{ ticket.category }}</p>
-                <p><strong>Priority:</strong> {{ ticket.get_priority_display }}</p>
-                <p><strong>Status:</strong> {{ ticket.get_status_display }}</p>
-                <p><strong>Your Agent:</strong> {{ ticket.assigned_to }}</p>
-                <p><strong>Date of creation:</strong> {{ ticket.created_at }}</p>
-                <a href="">More details __ <</a>
-                <hr>
-            </li>
-        {% endfor %}
-    </ul>
+    <table id="ticket_table" class="display">
+        <thead>
+            <tr>
+                <th>Название</th>
+                <th>Описание</th>
+                <th>Искатель</th>
+                <th>Агент</th>
+                <th>Статус</th>
+                <th>Приоритет</th>
+                <th>Решено</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Цикл для отображения данных из запроса -->
+            {% for ticket in tickets %}
+            <tr>
+                <td>{{ ticket.title }}</td>
+                <td>{{ ticket.description }}</td>
+                <td>{{ ticket.seeker.username }}</td>
+                <td>{{ ticket.agent.username }}</td>
+                <td>{{ ticket.get_status_display }}</td>
+                <td>{{ ticket.get_priority_display }}</td>
+                <td>
+    {% if ticket.resolved %}
+        Да
+    {% else %}
+        Нет
+    {% endif %}
+</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <script>
+        // Инициализируйте DataTables для таблицы
+        $(document).ready(function() {
+            $('#ticket_table').DataTable();
+        });
+    </script>
 </body>
 </html>
