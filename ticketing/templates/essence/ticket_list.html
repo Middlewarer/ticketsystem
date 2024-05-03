@@ -12,42 +12,34 @@
     <table id="ticket_table" class="display">
         <thead>
             <tr>
-                <th>Название</th>
-                <th>Описание</th>
-                <th>Искатель</th>
-                <th>Агент</th>
-                <th>Статус</th>
-                <th>Приоритет</th>
-                <th>Решено</th>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Seeker</th>
+                <th>Agent</th>
+                <th>Status</th>
+                <th>Priority</th>
+                <th>Solved</th>
             </tr>
         </thead>
-        <tbody>
-            <!-- Цикл для отображения данных из запроса -->
-            {% for ticket in tickets %}
-            <tr>
-                <td>{{ ticket.title }}</td>
-                <td>{{ ticket.description }}</td>
-                <td>{{ ticket.seeker.username }}</td>
-                <td>{{ ticket.agent.username }}</td>
-                <td>{{ ticket.get_status_display }}</td>
-                <td>{{ ticket.get_priority_display }}</td>
-                <td>
-    {% if ticket.resolved %}
-        Да
-    {% else %}
-        Нет
-    {% endif %}
-</td>
-            </tr>
-            {% endfor %}
-        </tbody>
     </table>
 
     <script>
-        // Инициализируйте DataTables для таблицы
         $(document).ready(function() {
             $('#ticket_table').DataTable();
         });
+
+        new DataTable('#ticket_table', {
+        ajax: '{% url "main:api" %}',
+        columns: [
+        { data: 'title' },
+        { data: 'description' },
+        { data: 'seeker' },
+        { data: 'agent' },
+        { data: 'status' },
+        { data: 'priority' },
+            { data: 'resolved' }
+    ]
+});
     </script>
 </body>
 </html>
