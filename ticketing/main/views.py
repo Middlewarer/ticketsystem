@@ -30,6 +30,36 @@ class ProfileView(LoginRequiredMixin, DetailView):
     def get_object(self, queryset=None):
         return self.request.user
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        current_user = self.request.user
+
+        context['seeker'] = Ticket.objects.filter(seeker=current_user).order_by('-id')
+        context['agent'] = Ticket.objects.filter(agent=current_user).order_by('-id')
+
+        return context
+
+
+def user_tickets_api(request):
+    current_user = request.user
+    seeker_tickets = Ticket.objects.filter(seeker=current_user).order_by('-id')
+    agent_tickets = Ticket.objects.filter(agent=current_user).order_by('-id')
+
+    data_of_tickets = list()
+    for item in seeker_tickets:
+        data_of_tickets.append({
+            "id": item.id,
+            "title": item.title,
+            "description": item.description,
+            "seeker": item.seeker if item.seeker else "-",
+            "agent": item.agent if item.agent else "-",
+            "status": item.status,
+            "priority": item.priority,
+            "resolved": item.resolved
+        })
+
+    return JsonResponse({"data": data_of_tickets})
+
 
 class TicketCreateView(CreateView, LoginRequiredMixin):
     model = Ticket

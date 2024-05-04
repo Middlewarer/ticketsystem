@@ -46,9 +46,7 @@ class LogoutView(RedirectView):
 
     def dispatch(self, request, *args, **kwargs):
         logout(request)
-
         return super().dispatch(request, *args, **kwargs)
-
 
 
 #-----___----> ALR Endblock

@@ -10,4 +10,5 @@ urlpatterns = [
     path('api/', views.table_api, name='api'),
     path('profile/', views.ProfileView.as_view(), name='profile'),
     path('edit/', views.UserProfileUpdateView.as_view(), name='edit'),
+    path('appi/', views.user_tickets_api, name='appi')
 ]
