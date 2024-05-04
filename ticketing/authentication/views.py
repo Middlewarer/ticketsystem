@@ -7,6 +7,8 @@ from django.views.generic import RedirectView
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
 
+# -----> ALR Setup
+
 
 class LoginView(FormView):
     template_name = 'authentication/auth.html'
@@ -39,7 +41,6 @@ class RegistrationView(FormView):
         return redirect(self.get_success_url())
 
 
-
 class LogoutView(RedirectView):
     pattern_name = 'authentication:login'
 
@@ -47,3 +48,7 @@ class LogoutView(RedirectView):
         logout(request)
 
         return super().dispatch(request, *args, **kwargs)
+
+
+
+#-----___----> ALR Endblock

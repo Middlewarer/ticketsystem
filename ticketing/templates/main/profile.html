@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Профиль пользователя</title>
+    <!-- Подключение CSS файла -->
+    <link rel="stylesheet" href="">
+</head>
+
+<body>
+<style>/* Общие стили */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f8f8f8;
+}
+
+.container {
+    width: 70%;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+}
+
+.profile-info {
+    display: flex;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    margin-right: 20px;
+}
+
+.user-details {
+    flex: 1;
+}
+
+.user-details p {
+    margin: 10px 0;
+}
+
+hr {
+    border: 1px solid #ccc;
+    margin: 20px 0;
+}
+
+.btn {
+    padding: 10px 15px;
+    margin: 5px;
+    border: none;
+    border-radius: 4px;
+    text-decoration: none;
+    color: white;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background-color: #007bff;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+}
+</style>
+
+    <div class="container">
+        <!-- Заголовок страницы профиля -->
+        <h1>Профиль пользователя</h1>
+
+        <!-- Информация о пользователе -->
+        <div class="profile-info">
+            <img src="" alt="Аватар пользователя" class="avatar">
+            <div class="user-details">
+                <p><strong>Имя:</strong> {{ user.first_name }} {{ user.last_name }}</p>
+                <p><strong>Имя пользователя:</strong> {{ user.username }}</p>
+                <p><strong>Электронная почта:</strong> {{ user.email }}</p>
+                <p><strong>Дата регистрации:</strong> {{ user.date_joined }}</p>
+
+                <!-- Добавьте другие поля профиля, если есть -->
+                <hr>
+
+                <!-- Кнопка редактирования профиля -->
+                <a href="{% url 'main:edit' %}" class="btn btn-primary">Редактировать профиль</a>
+
+                <!-- Кнопка выхода -->
+                <a href="{% url 'authentication:logout' %}" class="btn btn-danger">Выйти</a>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

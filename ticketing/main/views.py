@@ -1,32 +1,40 @@
 
-
 from django.shortcuts import render
 from django.http import JsonResponse
-from django.views.generic import TemplateView
-from django.views.generic.edit import FormView, CreateView
+from django.views.generic import TemplateView, DetailView
+from django.views.generic.edit import FormView, CreateView, UpdateView
 from django.views.generic import ListView
 from django.shortcuts import redirect
+from django.contrib.auth.models import User
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from django.urls import reverse_lazy
 
-from .forms import TicketForm
+from .forms import TicketForm, UserProfileForm
 from .models import Ticket
 
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 
 
-@method_decorator(login_required(login_url='login'), name='dispatch')
 class DefaultView(TemplateView, LoginRequiredMixin):
-    template_name = 'essence/base.html'
+    template_name = 'main/base.html'
+
+
+class ProfileView(LoginRequiredMixin, DetailView):
+    template_name = 'main/profile.html'
+    model = User
+    context_object_name = 'user'
+
+    def get_object(self, queryset=None):
+        return self.request.user
 
 
 class TicketCreateView(CreateView, LoginRequiredMixin):
     model = Ticket
     form_class = TicketForm
-    template_name = 'essence/cr_ticket.html'
+    template_name = 'main/cr_ticket.html'
     success_url = reverse_lazy('main:create')
 
     def form_valid(self, form):
@@ -38,12 +46,21 @@ class TicketCreateView(CreateView, LoginRequiredMixin):
 
 
 class TicketListView(ListView, LoginRequiredMixin):
-    template_name = 'essence/ticket_list.html'
     model = Ticket
     context_object_name = 'tickets'
 
     def get_queryset(self):
         return Ticket.objects.all()
+
+
+class UserProfileUpdateView(LoginRequiredMixin, UpdateView):
+    model = User
+    form_class = UserProfileForm
+    template_name = 'main/edit.html'
+    success_url = reverse_lazy('main:profile')
+
+    def get_object(self, queryset=None):
+        return self.request.user
 
 
 def table_api(request):
