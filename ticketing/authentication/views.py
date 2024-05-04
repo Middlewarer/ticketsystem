@@ -2,41 +2,48 @@ from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from .forms import LoginForm
-
+from django.views.generic.edit import FormView
+from django.views.generic import RedirectView
+from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
 
 
-@login_required(login_url='authentication:login')
-def login_view(request):
-    if request.method == 'POST':
-        form = LoginForm(request, request.POST)
-        print('okok')
-        if form.is_valid():
-            print('hohoho')
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['password']
-            user = authenticate(username=username, password=password)
-            if user is not None:
-                login(request, user)
-                print('ok buddy')
-                return redirect('main:default')
-    else:
-        form = LoginForm()
+class LoginView(FormView):
+    template_name = 'authentication/auth.html'
+    form_class = LoginForm
+    success_url = 'main:default'
 
-    return render(request, 'authentication/auth.html', {'form': form})
+    def form_valid(self, form):
+        username = form.cleaned_data['username']
+        password = form.cleaned_data['password']
+        user = authenticate(username=username, password=password)
 
-
-def register_view(request):
-    if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            form.save()
+        if user is not None:
+            login(self.request, user)
             return redirect('main:default')
-    else:
-        form = UserCreationForm()
-    return render(request, 'authentication/register.html', {'form': form})
+        else:
+            return self.form_invalid(form)
+
+    def form_invalid(self, form):
+        return self.render_to_response(self.get_context_data(form=form))
 
 
-def logout_view(request):
-    logout(request)
-    return redirect('authentication:login')
+class RegistrationView(FormView):
+    template_name = 'authentication/registration.html'
+    form_class = UserCreationForm
+    success_url = reverse_lazy('main:default')
+
+    def form_valid(self, form):
+        user = form.save()
+        login(self.request, user)
+        return redirect(self.get_success_url())
+
+
+
+class LogoutView(RedirectView):
+    pattern_name = 'authentication:login'
+
+    def dispatch(self, request, *args, **kwargs):
+        logout(request)
+
+        return super().dispatch(request, *args, **kwargs)

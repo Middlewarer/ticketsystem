@@ -6,10 +6,10 @@ from django.contrib.auth.models import User
 class Ticket(models.Model):
 
     class Status(models.TextChoices):
-        CLOSED = 'CLOSED'
-        PENDING = 'PENDING'
-        APPROVED = 'APPROVED'
-        REJECTED = 'REJECTED'
+        CLOSED = 'Closed'
+        PENDING = 'Pending'
+        APPROVED = 'Approved'
+        REJECTED = 'Rejected'
 
     class Priority(models.IntegerChoices):
         LOW = 1
