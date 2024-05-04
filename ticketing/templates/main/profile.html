@@ -105,8 +105,23 @@ hr {
             </div>
         </div>
     </div>
+<!-----  Assigned  ----->
+<table id="ticket_table_less" class="display">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Seeker</th>
+                <th>Agent</th>
+                <th>Status</th>
+                <th>Priority</th>
+                <th>Solved</th>
+            </tr>
+        </thead>
+    </table>
 
-<table id="ticket_table" class="display">
+<hr>
+<table id="ticket_table_new" class="display">
         <thead>
             <tr>
                 <th>Title</th>
@@ -122,11 +137,28 @@ hr {
 
     <script>
         $(document).ready(function() {
-            $('#ticket_table').DataTable();
+            $('#ticket_table_less').DataTable();
         });
 
         new DataTable('#ticket_table', {
         ajax: '{% url "main:appi" %}',
+        columns: [
+        { data: 'title' },
+        { data: 'description' },
+        { data: 'seeker' },
+        { data: 'agent' },
+        { data: 'status' },
+        { data: 'priority' },
+            { data: 'resolved' }
+    ]
+});
+
+        $(document).ready(function() {
+            $('#ticket_table_new').DataTable();
+        });
+
+        new DataTable('#ticket_table', {
+        ajax: '{% url "main:apppi" %}',
         columns: [
         { data: 'title' },
         { data: 'description' },
