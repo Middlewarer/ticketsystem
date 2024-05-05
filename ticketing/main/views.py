@@ -1,4 +1,4 @@
-
+from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.views.generic import TemplateView, DetailView
 from django.views.generic.edit import CreateView, UpdateView
@@ -58,19 +58,19 @@ def user_tickets_api(request):
 
 
 def user_new_tickets_api(request):
-    current_user = request.user.id
+    current_user = request.user
     agent_tickets = Ticket.objects.filter(agent=current_user).order_by('-id')
 
     data_of_tickets = list()
     for item in agent_tickets:
-        seeker_id = item.seeker.id if item.seeker else None
-        agent_id = item.agent.id if item.agent else None
+        seeker_id = item.seeker.id if item.seeker else '-'
+        agent_id = item.agent.id if item.agent else '-'
         data_of_tickets.append({
             "id": item.id,
             "title": item.title,
             "description": item.description,
-            "seeker": item.seeker if item.seeker else "-",
-            "agent": item.agent if item.agent else "-",
+            "seeker": seeker_id,
+            "agent": agent_id,
             "status": item.status,
             "priority": item.priority,
             "resolved": item.resolved
@@ -107,7 +107,7 @@ class UserProfileUpdateView(LoginRequiredMixin, UpdateView):
     model = User
     form_class = UserProfileForm
     template_name = 'main/edit.html'
-    success_url = reverse_lazy('main:profile')
+    success_url = 'main:profile'
 
     def get_object(self, queryset=None):
         return self.request.user
@@ -133,7 +133,20 @@ def table_api(request):
     return JsonResponse({"data": list_ticket})
 
 
-class TicketDetailView(LoginRequiredMixin, DetailView):
+class TicketDetailView(LoginRequiredMixin, UpdateView):
     model = Ticket
+    form_class = TicketForm
     template_name = 'main/tc_detail.html'
     context_object_name = 'ticket'
+    success_url = 'done/profile'
+
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if 'become_agent' in request.POST:
+            self.object.agent = request.user
+            self.object.save()
+
+            return redirect('main:profile')
+
+        return super().post(request, *args, **kwargs)

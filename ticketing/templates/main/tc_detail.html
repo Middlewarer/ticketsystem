@@ -44,8 +44,8 @@
             color: #333333;
         }
 
-        /* Стили для кнопки назад */
-        .back-button {
+        /* Стили для кнопок */
+        .button {
             display: inline-block;
             padding: 8px 16px;
             margin-top: 20px;
@@ -56,7 +56,7 @@
             transition: background-color 0.3s;
         }
 
-        .back-button:hover {
+        .button:hover {
             background-color: #0056b3;
         }
     </style>
@@ -76,6 +76,14 @@
                 <p><strong>Priority:</strong> {{ ticket.priority }}</p> <!-- Приоритет билета -->
                 <p><strong>Resolved:</strong> {{ ticket.resolved|yesno:"Да,Нет" }}</p> <!-- Решен ли билет -->
             </div>
+
+            <!-- Добавлена кнопка "Стать агентом" -->
+            <form method="post" action="">
+    {% csrf_token %}
+    <button type="submit" name="become_agent" class="button">Стать агентом</button>
+</form>
+
+            <!-- Добавьте обработчик события для кнопки -->
         </div>
     </div>
 </body>
