@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Редактировать профиль</title>
+    <title>Edit Profile</title>
     <link rel="stylesheet" href="#">
 </head>
 <body>
     <div class="container">
-        <h1>Редактировать профиль</h1>
+        <h1>Edit Profile</h1>
         <form method="post">
             {% csrf_token %}
             {{ form.as_p }}
-            <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+            <button type="submit" class="btn btn-primary">Save</button>
         </form>
     </div>
 </body>
