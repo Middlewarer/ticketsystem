@@ -1,10 +1,8 @@
 
-from django.shortcuts import render
 from django.http import JsonResponse
 from django.views.generic import TemplateView, DetailView
-from django.views.generic.edit import FormView, CreateView, UpdateView
+from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic import ListView
-from django.shortcuts import redirect
 from django.contrib.auth.models import User
 
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -13,9 +11,6 @@ from django.urls import reverse_lazy
 
 from .forms import TicketForm, UserProfileForm
 from .models import Ticket
-
-from django.contrib.auth.decorators import login_required
-from django.utils.decorators import method_decorator
 
 
 class DefaultView(TemplateView, LoginRequiredMixin):
@@ -46,12 +41,14 @@ def user_tickets_api(request):
 
     data_of_tickets = list()
     for item in seeker_tickets:
+        seeker_id = item.seeker.id if item.seeker else '-'
+        agent_id = item.agent.id if item.agent else '-'
         data_of_tickets.append({
             "id": item.id,
             "title": item.title,
             "description": item.description,
-            "seeker": item.seeker if item.seeker else "-",
-            "agent": item.agent if item.agent else "-",
+            "seeker": seeker_id,
+            "agent": agent_id,
             "status": item.status,
             "priority": item.priority,
             "resolved": item.resolved
@@ -59,12 +56,15 @@ def user_tickets_api(request):
 
     return JsonResponse({"data": data_of_tickets})
 
+
 def user_new_tickets_api(request):
-    current_user = request.user
+    current_user = request.user.id
     agent_tickets = Ticket.objects.filter(agent=current_user).order_by('-id')
 
     data_of_tickets = list()
     for item in agent_tickets:
+        seeker_id = item.seeker.id if item.seeker else None
+        agent_id = item.agent.id if item.agent else None
         data_of_tickets.append({
             "id": item.id,
             "title": item.title,
@@ -86,7 +86,9 @@ class TicketCreateView(CreateView, LoginRequiredMixin):
     success_url = reverse_lazy('main:create')
 
     def form_valid(self, form):
-        form.save()
+        ticket = form.save(commit=False)
+        ticket.seeker = self.request.user
+        ticket.save()
         return super().form_valid(form)
 
     def form_invalid(self, form):
@@ -115,11 +117,13 @@ def table_api(request):
     list_ticket = list()
     ticket = Ticket.objects.all()
     for item in ticket:
+        seeker_id = item.seeker.id if item.seeker else None
+        agent_id = item.agent.id if item.agent else None
         data = {"id": item.id,
                 "title": item.title,
                 "description": item.description,
-                "seeker": item.seeker if item.seeker else "-",
-                "agent": item.agent if item.agent else "-",
+                "seeker": seeker_id,
+                "agent": agent_id,
                 "status": item.status,
                 "priority": item.priority,
                 "resolved": item.resolved}
@@ -127,3 +131,9 @@ def table_api(request):
         list_ticket.append(data)
 
     return JsonResponse({"data": list_ticket})
+
+
+class TicketDetailView(LoginRequiredMixin, DetailView):
+    model = Ticket
+    template_name = 'main/tc_detail.html'
+    context_object_name = 'ticket'

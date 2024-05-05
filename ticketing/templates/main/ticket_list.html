@@ -31,7 +31,9 @@
         new DataTable('#ticket_table', {
         ajax: '{% url "main:api" %}',
         columns: [
-        { data: 'title' },
+        { data: 'title',
+        render: function (data, type, row) {
+        return `<a href="/done/ticket_detail/${row.id}/">Watch Ticket Detail</a>`;        }},
         { data: 'description' },
         { data: 'seeker' },
         { data: 'agent' },

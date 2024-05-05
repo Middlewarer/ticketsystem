@@ -11,5 +11,6 @@ urlpatterns = [
     path('profile/', views.ProfileView.as_view(), name='profile'),
     path('edit/', views.UserProfileUpdateView.as_view(), name='edit'),
     path('appi/', views.user_tickets_api, name='appi'),
-    path('apppi/', views.user_new_tickets_api, name='apppi')
+    path('apppi/', views.user_new_tickets_api, name='apppi'),
+    path('ticket_detail/<int:pk>/', views.TicketDetailView.as_view(), name='ticket_detail'),
 ]

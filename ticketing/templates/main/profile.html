@@ -136,40 +136,36 @@ hr {
     </table>
 
     <script>
-        $(document).ready(function() {
-            $('#ticket_table_less').DataTable();
+    $(document).ready(function() {
+        // Инициализация таблицы для #ticket_table_less
+        new DataTable('#ticket_table_less', {
+            ajax: '{% url "main:appi" %}',
+            columns: [
+                { data: 'title' },
+                { data: 'description' },
+                { data: 'seeker' },
+                { data: 'agent' },
+                { data: 'status' },
+                { data: 'priority' },
+                { data: 'resolved' }
+            ]
         });
 
-        new DataTable('#ticket_table', {
-        ajax: '{% url "main:appi" %}',
-        columns: [
-        { data: 'title' },
-        { data: 'description' },
-        { data: 'seeker' },
-        { data: 'agent' },
-        { data: 'status' },
-        { data: 'priority' },
-            { data: 'resolved' }
-    ]
-});
-
-        $(document).ready(function() {
-            $('#ticket_table_new').DataTable();
+        // Инициализация таблицы для #ticket_table_new
+        new DataTable('#ticket_table_new', {
+            ajax: '{% url "main:apppi" %}',
+            columns: [
+                { data: 'title' },
+                { data: 'description' },
+                { data: 'seeker' },
+                { data: 'agent' },
+                { data: 'status' },
+                { data: 'priority' },
+                { data: 'resolved' }
+            ]
         });
-
-        new DataTable('#ticket_table', {
-        ajax: '{% url "main:apppi" %}',
-        columns: [
-        { data: 'title' },
-        { data: 'description' },
-        { data: 'seeker' },
-        { data: 'agent' },
-        { data: 'status' },
-        { data: 'priority' },
-            { data: 'resolved' }
-    ]
-});
-    </script>
+    });
+</script>
 </body>
 
 </html>

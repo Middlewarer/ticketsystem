@@ -20,11 +20,19 @@ class Ticket(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField()
     #category = models.ForeignKey('Category', on_delete=models.CASCADE)
-    seeker = models.ForeignKey(User, related_name='tickets_as_agent', on_delete=models.CASCADE, default=None, null=True)
+    seeker = models.ForeignKey(User, related_name='tickets_as_agent', on_delete=models.CASCADE, null=True)
     agent = models.ForeignKey(User, related_name='tickets_as_seeker', on_delete=models.CASCADE, default=None, null=True)
     status = models.CharField(max_length=15, choices=Status.choices, default=Status.PENDING)
     priority = models.IntegerField(choices=Priority.choices, default=Priority.NORMAL)
     resolved = models.BooleanField(default=False)
+
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            self.seeker = self.seeker  # Установите seaker при создании билета
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.title
 
 
 # Create your models here.
