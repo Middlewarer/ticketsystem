@@ -5,7 +5,6 @@ from .forms import LoginForm
 from django.views.generic.edit import FormView
 from django.views.generic import RedirectView
 from django.urls import reverse_lazy
-from django.contrib.auth.decorators import login_required
 
 # -----> ALR Setup
 
