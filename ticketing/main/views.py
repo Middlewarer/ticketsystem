@@ -12,6 +12,8 @@ from django.urls import reverse_lazy
 from .forms import TicketForm, UserProfileForm
 from .models import Ticket
 
+from django.db.models import Q
+
 
 class DefaultView(TemplateView, LoginRequiredMixin):
     template_name = 'main/base.html'
@@ -100,14 +102,15 @@ class TicketListView(ListView, LoginRequiredMixin):
     context_object_name = 'tickets'
 
     def get_queryset(self):
-        return Ticket.objects.all()
+        tickets_with_agent = Ticket.objects.filter(agent__isnull=False)
+        return tickets_with_agent
 
 
 class UserProfileUpdateView(LoginRequiredMixin, UpdateView):
     model = User
     form_class = UserProfileForm
     template_name = 'main/edit.html'
-    success_url = 'main:profile'
+    success_url = '/done/profile'
 
     def get_object(self, queryset=None):
         return self.request.user
@@ -115,15 +118,26 @@ class UserProfileUpdateView(LoginRequiredMixin, UpdateView):
 
 def table_api(request):
     list_ticket = list()
-    ticket = Ticket.objects.all()
-    for item in ticket:
+    tickets = Ticket.objects.all()
+
+    for item in tickets:
         seeker_id = item.seeker.id if item.seeker else None
+        seeker_username = item.seeker.username if item.seeker else None
+
         agent_id = item.agent.id if item.agent else None
+        agent_username = item.agent.username if item.agent else None
+
         data = {"id": item.id,
                 "title": item.title,
                 "description": item.description,
-                "seeker": seeker_id,
-                "agent": agent_id,
+
+                "seeker": {'id': seeker_id,
+                           'username': seeker_username},
+
+                "agent": {
+                        "id": agent_id,
+                        "username": agent_username},
+
                 "status": item.status,
                 "priority": item.priority,
                 "resolved": item.resolved}

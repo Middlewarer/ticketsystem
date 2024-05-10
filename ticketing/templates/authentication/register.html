@@ -16,7 +16,7 @@
         <h2 class="text-center mb-4">Register</h2>
 
         <!-- Форма регистрации -->
-        <form method="post" class="mx-auto" style="max-width: 400px;">
+        <form method="post" action="{% url 'authentication:register' %}" class="mx-auto" style="max-width: 400px;">
             <!-- Защита от CSRF -->
             {% csrf_token %}
 
@@ -27,6 +27,13 @@
             <div class="d-grid">
                 <button type="submit" class="btn btn-primary">Register</button>
             </div>
+
+            <!-- Обработка ошибок -->
+            {% if form.errors %}
+                <div class="alert alert-danger mt-3">
+                    Пожалуйста, исправьте ошибки в форме.
+                </div>
+            {% endif %}
         </form>
     </div>
 

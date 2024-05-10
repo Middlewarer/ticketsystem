@@ -21,7 +21,7 @@ class LoginView(FormView):
 
         if user is not None:
             login(self.request, user)
-            return redirect('main:default')
+            return redirect('main:home')
         else:
             return self.form_invalid(form)
 

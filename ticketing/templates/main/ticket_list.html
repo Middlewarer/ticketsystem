@@ -31,18 +31,22 @@
         </table>
     </div>
 
+    <div class="container my-4 text-center">
+    <a href="{% url 'main:create' %}" class="btn btn-primary">Сreate a ticket</a>
+</div>
+
     <!-- Инициализация DataTables -->
     <script>
         $(document).ready(function () {
-            // Инициализация DataTables с AJAX-запросом для загрузки данных из API
-            $('#ticket_table').DataTable({
-                ajax: '{% url "main:api" %}',
-                columns: [
-                    {
+    // Инициализация DataTables с AJAX-запросом для загрузки данных из API
+    $('#ticket_table').DataTable({
+        ajax: '{% url "main:api" %}',
+        columns: [
+            {
                 data: 'title',
                 render: function (data, type, row) {
                     // Проверка, равен ли agent null
-                    if (row.agent === null) {
+                    if (row.agent.id === null) {
                         // Если agent равен null, возвращаем ссылку "посмотреть детали"
                         return `<a href="/done/ticket_detail/${row.id}/">Watch Ticket Detail</a>`;
                     } else {
@@ -51,15 +55,40 @@
                     }
                 }
             },
-                    { data: 'description' },
-                    { data: 'seeker' },
-                    { data: 'agent' },
-                    { data: 'status' },
-                    { data: 'priority' },
-                    { data: 'resolved' }
-                ]
-            });
-        });
+            { data: 'description' },
+            {
+                data: 'seeker',
+                render: function (data, type, row) {
+                    // Проверяем, существует ли seeker и его username
+                    if (data && data.username) {
+                        // Создаем ссылку на страницу профиля seeker
+                        return `<a href="/profile/seeker/${data.id}/">${data.username}</a>`;
+                    } else {
+                        // Если seeker не существует или его username отсутствует, возвращаем прочерк
+                        return '-';
+                    }
+                }
+            },
+            {
+                data: 'agent',
+                render: function (data, type, row) {
+                    // Проверяем, существует ли agent и его username
+                    if (data && data.username) {
+                        // Создаем ссылку на страницу профиля agent
+                        return `<a href="/profile/agent/${data.id}/">${data.username}</a>`;
+                    } else {
+                        // Если agent не существует или его username отсутствует, возвращаем прочерк
+                        return '-';
+                    }
+                }
+            },
+            { data: 'status' },
+            { data: 'priority' },
+            { data: 'resolved' }
+        ]
+    });
+});
+
     </script>
 
     <!-- Загрузка скриптов Bootstrap -->
